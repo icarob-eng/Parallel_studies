@@ -1,0 +1,6 @@
+.idea/
+*.mod
+*.o
+results/
+cmake-build-debug/
+build/
