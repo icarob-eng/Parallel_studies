@@ -29,8 +29,8 @@ program navier_stokes
     allocate(vnext(nx,ny))
     allocate(times(nsteps))
 
-    ! call initialize_field_uniform(u, v)
-    call initialize_field_gaussian(u, v)
+    ! call init_field_uniform(u, v)
+    call init_field_gaussian(u, v)
 
     stability = check_stability(nu, dt, dx, dy)
 
@@ -74,20 +74,20 @@ program navier_stokes
 
 contains
 
-    !> Initialize the velocity field with a constant velocity.
+    !> init the velocity field with a constant velocity.
     !!
     !! This works as an input function. Inherits the global values of nx and ny.
     !!
     !! @param[out] u_  x-component of the velocity field.
     !! @param[out] v_  y-component of the velocity field.
-    subroutine initialize_field_uniform(u_, v_)
+    subroutine init_field_uniform(u_, v_)
         real(c_double), intent(out) :: u_(nx,ny), v_(nx,ny)
 
         u_ = 1.0_c_double
         v_ = 0.0_c_double
-    end subroutine initialize_field_uniform
+    end subroutine init_field_uniform
 
-    subroutine initialize_field_gaussian(u_, v_)
+    subroutine init_field_gaussian(u_, v_)
         real(c_double), intent(out) :: u_(nx,ny), v_(nx,ny)
 
         integer :: i, j
@@ -112,6 +112,6 @@ contains
                 v_(i,j) = 0.0d0
             end do
         end do
-    end subroutine initialize_field_gaussian
+    end subroutine init_field_gaussian
 
 end program navier_stokes

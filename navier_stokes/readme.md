@@ -29,7 +29,7 @@ Running the program:
 ./build/debug/navier_stokes 50 50 10000 1.0 1.0 0.0001 0.01
 ```
 ## Simulation parameters input
-The data is passed directly in the `main.f90` file. The grid and time size and scale, as well as the viscosty parameter are all passed as CLI arguments to the program. The velocity field is initialized with a custom `initialize_field` subroutine, which can be overwriten and the program should be recompiled. Additional parameter variables are:
+The data is passed directly in the `main.f90` file. The grid and time size and scale, as well as the viscosty parameter are all passed as CLI arguments to the program. The velocity field is initialized with a custom `init_field` subroutine, which can be overwriten and the program should be recompiled. Additional parameter variables are:
 ```fortran
 integer(c_int), parameter   :: save_steps = 500  ! save each `save_steps` steps
 integer(c_int), parameter   :: stability_steps = 1000  ! check stabilty each `stability_steps` steps

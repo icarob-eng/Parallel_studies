@@ -119,9 +119,6 @@ contains
     !! This function is useful for verifying that a uniform velocity
     !! field remains stationary under viscous evolution.
     !!
-    !! For the default initial condition, the expected result is
-    !! approximately zero up to floating-point round-off.
-    !!
     !! @param[in] u  x-component of the velocity field.
     !! @param[in] nx Number of grid points in the x direction.
     !! @param[in] ny Number of grid points in the y direction.
