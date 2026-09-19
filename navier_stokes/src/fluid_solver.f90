@@ -71,27 +71,23 @@ contains
     !! @param[in]  dy    Grid spacing in the y direction.
     !! @param[in]  nu    Kinematic viscosity.
     !! @param[in]  dt    Time step.
-    !! @param[inout] t   Current step time.
-    subroutine time_step(u, v, unext, vnext, nx, ny, dx, dy, nu, dt, t)
+    subroutine time_step(u, v, unext, vnext, nx, ny, dx, dy, nu, dt)
         integer(c_int), intent(in)  :: nx, ny
         real(c_double), intent(in)  :: u(nx,ny),     v(nx,ny)
         real(c_double), intent(out) :: unext(nx,ny), vnext(nx,ny)
         real(c_double), intent(in)  :: dx, dy, nu, dt
-        real(c_double), intent(inout)  :: t
         integer(c_int) :: i, j, ip, im, jp, jm
         real(c_double) :: lap_u, lap_v
 
-        do i = 1, nx
-
-            ! Periodic neighbors in x (mod makes the hole grid periodic)
-            ip = mod(i, nx) + 1
-            im = mod(i - 2 + nx, nx) + 1
-
-            do j = 1, ny
-
-                ! Periodic neighbors in y.
-                jp = mod(j, ny) + 1
-                jm = mod(j - 2 + ny, ny) + 1
+        !$omp do schedule(dynamic, 32)
+        do j = 1, ny
+            ! Periodic neighbors in y (mod makes the hole grid periodic).
+            jp = mod(j, ny) + 1
+            jm = mod(j - 2 + ny, ny) + 1
+            do i = 1, nx
+                ! Periodic neighbors in x.
+                ip = mod(i, nx) + 1
+                im = mod(i - 2 + nx, nx) + 1
 
                 ! Laplacian of u.
                 lap_u = &
@@ -110,7 +106,7 @@ contains
                 vnext(i,j) = v(i,j) + nu * dt * lap_v
             end do
         end do
-        t = t + dt
+        !omp end do
     end subroutine time_step
 
 

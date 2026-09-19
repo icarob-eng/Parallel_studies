@@ -127,8 +127,8 @@ contains
 
         open(unit=10, file=filename, status="old", position="append", action="write")
 
-        do i = 1, nx
-            do j = 1, ny
+        do j = 1, ny
+            do i = 1, nx
                 write(10,'(5ES15.6)') &
                     t, &
                     real(i - 1, c_double) * dx, &

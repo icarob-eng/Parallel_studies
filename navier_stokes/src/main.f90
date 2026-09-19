@@ -1,5 +1,4 @@
 program navier_stokes
-
     use iso_c_binding, only: c_double, c_int
 
     use fluid_solver
@@ -8,9 +7,10 @@ program navier_stokes
     implicit none
     integer(c_int) :: nx, ny, nsteps
     real(c_double) :: lx, ly, dt, nu
-    integer(c_int), parameter   :: save_steps = 500  ! save each `save_steps` steps
+    integer(c_int), parameter   :: save_steps = 500        ! save each `save_steps` steps
     integer(c_int), parameter   :: stability_steps = 1000  ! check stabilty each `stability_steps` steps
     character(len=*), parameter :: OUTPUT = "results/velocity.dat"
+
 
     real(c_double) :: dx, dy, stability, error, t, t_lastsave
     real(c_double), allocatable :: u(:,:), v(:,:), unext(:,:), vnext(:,:), times(:)
@@ -18,10 +18,12 @@ program navier_stokes
 
     call read_params(nx, ny, nsteps, lx, ly, dt, nu)
     call init_file(OUTPUT)
-
     ! Grid spacing.
     dx = lx / real(nx - 1, c_double)
     dy = ly / real(ny - 1, c_double)
+
+    t = 0
+    t_lastsave = 0
 
     allocate(u(nx,ny))
     allocate(v(nx,ny))
@@ -29,9 +31,11 @@ program navier_stokes
     allocate(vnext(nx,ny))
     allocate(times(nsteps))
 
+    !$omp parallel default(none) shared(u, v, unext, vnext, nx, ny, dx, dy, nu, dt, t_lastsave, t, nsteps) firstprivate(i_t)
     ! call init_field_uniform(u, v)
     call init_field_gaussian(u, v)
 
+    !$omp single private(stability)
     stability = check_stability(nu, dt, dx, dy)
 
     write(*,'(A,F12.6)') "Stability parameter = ", stability
@@ -40,29 +44,37 @@ program navier_stokes
         write(*,*) "ERROR: unstable time step."
         stop 1
     end if
+    !$omp end single
 
     ! Time integration.
-    t = 0
-    t_lastsave = 0
     do i_t = 1, nsteps
-        call time_step(u, v, unext, vnext, nx, ny, dx, dy, nu, dt, t)
+        call time_step(u, v, unext, vnext, nx, ny, dx, dy, nu, dt)
 
+        !$omp single
         u = unext
         v = vnext
+        t = t + dt
+        !$omp end single
 
+        !$omp single nowait private(error)
         ! Stability check
         if (mod(i_t, stability_steps) == 0) then
             error = check_error(u, nx, ny)
 
             write(*,'(A,I6,A,ES14.6)') "step = ", i_t, " max error = ", error
         end if
+        !$omp end single
 
+        !$omp single nowait
         ! Save step
         if (mod(i_t, save_steps) == 0) then
             call save_step(OUTPUT, u, v, nx, ny, dx, dy, t)
             t_lastsave = t
         end if
+        !$omp end single
+
     end do
+    !$omp end parallel
 
     ! Save final state.
     if (t /= t_lastsave) then
@@ -99,11 +111,11 @@ contains
         y0 = ly / 2.0d0
         sigma = 0.1d0 * min(lx, ly)
 
-        do i = 1, nx
-            xi = (i - 1) * lx / (nx - 1)
-
-            do j = 1, ny
+        !$omp do simd collapse(2)
+        do j = 1, ny
+            do i = 1, nx
                 yj = (j - 1) * ly / (ny - 1)
+                xi = (i - 1) * lx / (nx - 1)
 
                 u_(i,j) = u0 * exp( &
                     -((xi-x0)**2 + (yj-y0)**2) / (2.0d0*sigma**2) &
@@ -112,6 +124,7 @@ contains
                 v_(i,j) = 0.0d0
             end do
         end do
+        !$omp end do simd
     end subroutine init_field_gaussian
 
 end program navier_stokes
