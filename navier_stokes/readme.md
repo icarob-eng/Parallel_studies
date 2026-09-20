@@ -5,11 +5,11 @@ A study of parallization and optmization of the Navier-Stokes equation for a pre
 ### Compiling directly with `gfortran`
 Compiling the modules:
 ```bash
-gfortran -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow -c fluid_io.f90 fluid_solver.f90
+gfortran -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow -c src/fluid_io.f90 src/fluid_solver.f90
 ```
 Compiling the main program:
 ```bash
-gfortran -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow main.f90 fluid_io.o fluid_solver.o -o navier_stokes
+gfortran -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow main.f90 src/fluid_io.o src/fluid_solver.o -o src/navier_stokes
 ```
 Running the program:
 ```bash
