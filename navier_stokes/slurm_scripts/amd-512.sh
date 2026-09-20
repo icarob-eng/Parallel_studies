@@ -8,6 +8,8 @@
 
 # Script for NPAD cluster, npad.ufrn.br
 
+source ~/pascal-releases-master/env.sh
+
 srun pascalanalyzer ./wrapper_pascal.sh\
    --inst aut --idtm 5 --rpts 3\
    --cors 2,8,32,128\
