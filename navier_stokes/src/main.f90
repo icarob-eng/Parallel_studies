@@ -50,28 +50,29 @@ program navier_stokes
     do i_t = 1, nsteps
         call time_step(u, v, unext, vnext, nx, ny, dx, dy, nu, dt)
 
+        !$omp taskwait
         !$omp single
         u = unext
         v = vnext
         t = t + dt
         !$omp end single
 
-        !$omp single nowait private(error)
+        !$omp task private(error)
         ! Stability check
         if (mod(i_t, stability_steps) == 0) then
             error = check_error(u, nx, ny)
 
             write(*,'(A,I6,A,ES14.6)') "step = ", i_t, " max error = ", error
         end if
-        !$omp end single
+        !$omp end task
 
-        !$omp single nowait
+        !$omp task
         ! Save step
         if (mod(i_t, save_steps) == 0) then
             call save_step(OUTPUT, u, v, nx, ny, dx, dy, t)
             t_lastsave = t
         end if
-        !$omp end single
+        !$omp end task
 
     end do
     !$omp end parallel
