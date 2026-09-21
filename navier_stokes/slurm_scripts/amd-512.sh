@@ -13,9 +13,7 @@ mkdir -p "$LOG_PATH"
 exec > "$LOG_PATH/master.out.log"
 exec 2> "$LOG_PATH/master.err.log"
 
-pushd ~/pascal-releases-master
-source /env.sh
-popd
+module load softwares/pascalsuite/2025-07-08
 
 echo "Running at $SLURM_JOB_NODELIST."
 
@@ -24,4 +22,4 @@ srun --output="$LOG_PATH/log.out" --error="$LOG_PATH/log.err"\
    --inst aut --idtm 5 --rpts 3\
    --cors 2,8,32,128\
    --ipts 500,1000,2000,8000,16000\
-   --verb INFO -o navier_stokes_pascal0.json
+   --verb INFO -o results/navier_stokes_pascal0.json
