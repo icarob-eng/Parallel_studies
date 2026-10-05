@@ -7,7 +7,7 @@ program navier_stokes
     implicit none
     integer(c_int) :: nx, ny, nsteps
     real(c_double) :: lx, ly, dt, nu
-    integer(c_int), parameter   :: save_steps = 500        ! save each `save_steps` steps
+    integer(c_int), parameter   :: save_steps = 50000        ! save each `save_steps` steps
     integer(c_int), parameter   :: stability_steps = 1000  ! check stabilty each `stability_steps` steps
     character(len=*), parameter :: OUTPUT = "results/velocity.dat"
 
@@ -41,8 +41,7 @@ program navier_stokes
     write(*,'(A,F12.6)') "Stability parameter = ", stability
 
     if (stability > 0.5_c_double) then
-        write(*,*) "ERROR: unstable time step."
-        stop 1
+        error stop "Unstable time step."
     end if
     !$omp end single
 
