@@ -3,7 +3,9 @@
 #SBATCH --partition=amd-512
 #SBATCH --output=/dev/null
 #SBATCH --error=/dev/null
-#SBATCH --exclusive
+#SBATCH --cpus-per-task=128
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Script for NPAD cluster, npad.ufrn.br
 LOG_PATH="logs/$SLURM_JOB_NAME/$SLURM_JOB_ID"
