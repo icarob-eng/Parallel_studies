@@ -14,6 +14,8 @@ mkdir -p "$LOG_PATH"
 exec > "$LOG_PATH/master.log.out"
 exec 2> "$LOG_PATH/master.log.err"
 
+cmake --build --preset debug
+
 module load softwares/pascalsuite/2025-07-08
 
 echo "Running at $SLURM_JOB_NODELIST."
