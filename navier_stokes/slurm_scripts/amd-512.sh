@@ -22,5 +22,5 @@ srun --output="$LOG_PATH/log.out" --error="$LOG_PATH/log.err"\
    pascalanalyzer ./wrapper_pascal.sh\
    --inst aut --idtm 5 --rpts 3\
    --cors 1,4,16,64\
-   --ipts 100,400,1600,6400\
+   --ipts 10,40,160,640\
    --verb INFO -o results/navier_stokes_pascal0.json
