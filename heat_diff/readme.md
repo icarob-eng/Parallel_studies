@@ -3,18 +3,18 @@ A study of parallization and optmization of the linear heat diffusion equation i
 
 
 ## Building
-### Compiling directly with `gfortran`
+### Compiling directly with `gfortran` and `mpifort`
 Compiling the modules:
 ```bash
 gfortran -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow -c src/io.f90 src/temp_calc.f90
 ```
 Compiling the main program:
 ```bash
-gfortran -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow main.f90 src/io.o src/temp_calc.o -o build/debug/heat_diff
+mpifort -fopenmp -g -fcheck=all -ffpe-trap=invalid,zero,overflow main.f90 src/io.o src/temp_calc.o -o build/debug/heat_diff
 ```
 Running the program:
 ```bash
-./build/debug/heat_diff 100 100000 1.0 0.01 0.001
+mpirun build/debug/heat_diff 100 100000 1.0 0.01 0.001
 ```
 ### Compiling with `cmake`
 Generating the build files:
@@ -27,7 +27,7 @@ cmake --build --preset debug
 ```
 Running the program:
 ```bash
-./build/debug/heat_diff 100 100000 1.0 0.01 0.001
+mpirun build/debug/heat_diff 100 100000 1.0 0.01 0.001
 ```
 
 ## Simulation parameters input
