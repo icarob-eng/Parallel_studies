@@ -28,7 +28,7 @@ contains
     !! @param[out] nsteps Number of time steps of the simulation.
     !! @param[out] lx     Size of the complete grid x axis.
     !! @param[out] ly     Size of the complete grid y axis.
-    !! @param[out] dt     Scale of 
+    !! @param[out] dt     Scale of a time step.
     !! @param[out] nu     Viscosiy parameter.
     subroutine read_params(nx, ny, nsteps, lx, ly, dt, nu)
         ! Grid size input
@@ -117,7 +117,7 @@ contains
     !! @param[in] ny       Number of grid points in y.
     !! @param[in] dx       Grid spacing in x.
     !! @param[in] dy       Grid spacing in y.
-    !! @param[in] t        Current step time.
+    !! @param[in] t        Current time.
     subroutine save_step(filename, u, v, nx, ny, dx, dy, t)
         character(len=*), intent(in) :: filename
         integer(c_int), intent(in) :: nx, ny

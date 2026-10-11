@@ -79,7 +79,7 @@ contains
         integer(c_int) :: i, j, ip, im, jp, jm
         real(c_double) :: lap_u, lap_v
 
-        !$omp do schedule(dynamic, 32)
+        !$omp do schedule(dynamic, 64)
         do j = 1, ny
             ! Periodic neighbors in y (mod makes the hole grid periodic).
             jp = mod(j, ny) + 1
